@@ -1,0 +1,22 @@
+groups:
+  - name: tapa-buraco
+    rules:
+      - alert: TaxaDeErroAlta
+        # mais de 5% das requisições em erro 5xx nos últimos 2 minutos
+        # (demonstração: acesse /erro-demo algumas vezes e veja o alerta FIRING em :9090/alerts)
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[2m]))
+            / sum(rate(http_requests_total[2m])) > 0.05
+        for: 1m
+        labels:
+          severidade: critica
+        annotations:
+          resumo: "Taxa de erros 5xx acima de 5% no Tapa Buraco"
+
+      - alert: AppFora
+        expr: up{job="tapa-buraco"} == 0
+        for: 1m
+        labels:
+          severidade: critica
+        annotations:
+          resumo: "O MVP Tapa Buraco está fora do ar"

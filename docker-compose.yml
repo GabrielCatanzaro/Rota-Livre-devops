@@ -1,0 +1,50 @@
+# Stack completa do MVP: app + Prometheus + Grafana.
+# Segredos NUNCA ficam aqui: a senha do Grafana vem do ambiente (GitHub Secrets
+# no deploy). As portas 9090/3000 (admin) são fechadas no Security Group da AWS
+# para todo mundo exceto o IP do time — nunca 0.0.0.0/0.
+name: tapa-buraco
+
+services:
+  app:
+    build: .
+    container_name: tapa-buraco-app
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    ports:
+      - "80:8080"
+    environment:
+      - IA_URL=${IA_URL:-}
+    volumes:
+      - dados:/data
+
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    container_name: tapa-buraco-prometheus
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alertas.yml:/etc/prometheus/alertas.yml:ro
+
+  grafana:
+    image: grafana/grafana:11.1.0
+    container_name: tapa-buraco-grafana
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_SENHA:?defina GRAFANA_SENHA no ambiente}
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_dados:/var/lib/grafana
+
+volumes:
+  dados:
+  grafana_dados:

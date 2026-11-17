@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tapa Buraco · São Paulo</title>
+<style>
+  :root { --laranja:#e8590c; --escuro:#212529; --cinza:#f1f3f5; --borda:#dee2e6; }
+  * { box-sizing:border-box; margin:0; }
+  body { font-family:system-ui,Segoe UI,Roboto,sans-serif; background:var(--cinza); color:var(--escuro); }
+  header { background:var(--escuro); color:#fff; padding:20px 16px; }
+  header h1 { font-size:1.5rem; } header h1 span { color:var(--laranja); }
+  header p { opacity:.8; font-size:.9rem; margin-top:4px; }
+  main { max-width:960px; margin:0 auto; padding:16px; display:grid; gap:16px;
+         grid-template-columns:1fr 1fr; align-items:start; }
+  @media (max-width:760px){ main { grid-template-columns:1fr; } }
+  .card { background:#fff; border:1px solid var(--borda); border-radius:10px; padding:16px; }
+  .card h2 { font-size:1.05rem; margin-bottom:10px; }
+  label { display:block; font-size:.85rem; margin:10px 0 4px; font-weight:600; }
+  input, textarea { width:100%; padding:9px; border:1px solid var(--borda); border-radius:8px; font:inherit; }
+  textarea { min-height:80px; resize:vertical; }
+  button { margin-top:12px; background:var(--laranja); color:#fff; border:0; padding:10px 18px;
+           border-radius:8px; font:inherit; font-weight:600; cursor:pointer; }
+  button:hover { filter:brightness(.92); }
+  .relato { border-top:1px solid var(--borda); padding:10px 0; font-size:.9rem; }
+  .relato:first-of-type { border-top:0; }
+  .etiquetas { margin-top:4px; display:flex; gap:6px; flex-wrap:wrap; }
+  .etq { font-size:.72rem; padding:2px 8px; border-radius:99px; background:var(--cinza); }
+  .etq.alta { background:#ffe3e3; color:#c92a2a; } .etq.media { background:#fff3bf; color:#997404; }
+  .etq.baixa { background:#d3f9d8; color:#2b8a3e; }
+  #chatlog { max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
+  .msg { padding:9px 12px; border-radius:10px; font-size:.9rem; max-width:90%; white-space:pre-wrap; }
+  .msg.eu { background:var(--laranja); color:#fff; align-self:flex-end; }
+  .msg.bot { background:var(--cinza); align-self:flex-start; }
+  .msg.bot .fonte { display:block; margin-top:6px; font-size:.72rem; opacity:.7; }
+  .linha-chat { display:flex; gap:8px; } .linha-chat input { flex:1; } .linha-chat button { margin-top:0; }
+  footer { text-align:center; font-size:.75rem; opacity:.6; padding:20px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🕳️ Tapa <span>Buraco</span></h1>
+  <p>Reporte buracos e obstáculos nas vias e calçadas de São Paulo — e saiba seus direitos.</p>
+</header>
+<main>
+  <section class="card">
+    <h2>📍 Reportar um problema</h2>
+    <form id="form-relato">
+      <label for="endereco">Endereço / referência</label>
+      <input id="endereco" required minlength="3" placeholder="Av. Santo Amaro, altura do nº 1000">
+      <label for="descricao">Descreva o problema</label>
+      <textarea id="descricao" required minlength="5"
+        placeholder="Buraco fundo na faixa da direita, quase caí de moto hoje cedo"></textarea>
+      <button type="submit">Enviar relato</button>
+    </form>
+    <p id="retorno" style="margin-top:10px;font-size:.85rem;"></p>
+    <h2 style="margin-top:18px;">🗂️ Últimos relatos</h2>
+    <div id="lista"></div>
+  </section>
+
+  <section class="card">
+    <h2>💬 Assistente — tire suas dúvidas</h2>
+    <div id="chatlog">
+      <div class="msg bot">Oi! Pergunte algo como: <i>“caí num buraco, a prefeitura paga o conserto?”</i>
+        ou <i>“quem arruma a calçada?”</i></div>
+    </div>
+    <div class="linha-chat">
+      <input id="pergunta" placeholder="Sua pergunta..." maxlength="500">
+      <button id="enviar-chat" type="button">Perguntar</button>
+    </div>
+  </section>
+</main>
+<footer>Tapa Buraco · Global Solution 2026.2 · dados oficiais: SP156, CTB, Lei 15.442/2011 · nenhum dado pessoal é coletado (LGPD)</footer>
+<script>
+const $ = (s) => document.querySelector(s);
+
+// monta o card com textContent: o texto digitado pelo cidadão nunca vira HTML (evita XSS)
+function el(tag, classe, texto) {
+  const n = document.createElement(tag);
+  if (classe) n.className = classe;
+  if (texto !== undefined) n.textContent = texto;
+  return n;
+}
+
+async function carregarRelatos() {
+  const r = await fetch("/relatos"); const d = await r.json();
+  const lista = $("#lista");
+  lista.replaceChildren();
+  if (!d.relatos.length) {
+    const vazio = el("p", "", "Nenhum relato ainda. Seja o primeiro!");
+    vazio.style.cssText = "font-size:.85rem;opacity:.7";
+    lista.append(vazio);
+    return;
+  }
+  const gravidades = ["alta", "media", "baixa"];
+  for (const x of d.relatos) {
+    const card = el("div", "relato");
+    card.append(el("strong", "", x.endereco), el("br"), document.createTextNode(x.descricao));
+    const etq = el("div", "etiquetas");
+    etq.append(
+      el("span", "etq", x.tipo.replaceAll("_", " ")),
+      el("span", "etq " + (gravidades.includes(x.gravidade) ? x.gravidade : ""), "gravidade " + x.gravidade),
+      el("span", "etq", "→ " + x.orgao_sugerido),
+      el("span", "etq", x.status),
+    );
+    card.append(etq);
+    lista.append(card);
+  }
+}
+
+$("#form-relato").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("#retorno").textContent = "Enviando...";
+  const r = await fetch("/relatos", { method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ endereco: $("#endereco").value, descricao: $("#descricao").value }) });
+  if (r.ok) {
+    const d = await r.json();
+    $("#retorno").textContent =
+      `✅ Relato #${d.id} registrado — triagem: ${d.triagem.tipo.replaceAll("_"," ")}, ` +
+      `gravidade ${d.triagem.gravidade}, encaminhar para ${d.triagem.orgao_sugerido}.`;
+    e.target.reset(); carregarRelatos();
+  } else { $("#retorno").textContent = "❌ Não foi possível registrar. Tente de novo."; }
+});
+
+async function perguntar() {
+  const p = $("#pergunta").value.trim(); if (!p) return;
+  const log = $("#chatlog");
+  log.append(el("div", "msg eu", p));
+  $("#pergunta").value = "";
+  const bolha = el("div", "msg bot", "pensando...");
+  log.append(bolha); log.scrollTop = log.scrollHeight;
+  try {
+    const r = await fetch("/chat", { method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ pergunta: p }) });
+    const d = await r.json();
+    bolha.textContent = d.resposta;
+    if (d.fonte) bolha.append(el("span", "fonte", "Fonte: " + d.fonte));
+  } catch { bolha.textContent = "Assistente indisponível agora."; }
+  log.scrollTop = log.scrollHeight;
+}
+$("#enviar-chat").addEventListener("click", perguntar);
+$("#pergunta").addEventListener("keydown", (e) => { if (e.key === "Enter") perguntar(); });
+
+carregarRelatos();
+</script>
+</body>
+</html>

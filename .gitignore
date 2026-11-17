@@ -1,0 +1,18 @@
+# segredos e configuração local — nunca versionar
+.env
+*.pem
+terraform.tfvars
+
+# estado do Terraform — fora do repo
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+crash.log
+
+# python / dados locais
+__pycache__/
+*.pyc
+.venv/
+app/dados/
+*.db

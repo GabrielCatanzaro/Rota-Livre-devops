@@ -1,0 +1,111 @@
+# Pipeline DevSecOps do Tapa Buraco:
+# a cada push -> Gitleaks (segredos) + Semgrep (SAST) + build e Trivy (imagem).
+# Qualquer achado barra o pipeline ANTES do deploy.
+# Deploy automático na EC2 só na main, com todos os segredos em GitHub Secrets.
+name: DevSecOps
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  segredos:
+    name: Gitleaks — segredos vazados
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sast:
+    name: Semgrep — análise estática
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - name: Semgrep (regras automáticas; barra achados de severidade alta)
+        run: semgrep scan --config auto --severity ERROR --error
+
+  imagem:
+    name: Build + Trivy — vulnerabilidades da imagem
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build da imagem
+        run: docker build -t tapa-buraco:${{ github.sha }} .
+      - name: Trivy (barra CRITICAL/HIGH que já têm correção)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: tapa-buraco:${{ github.sha }}
+          format: table
+          exit-code: "1"
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+  deploy:
+    name: Deploy automático na EC2
+    needs: [segredos, sast, imagem]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Credenciais AWS (GitHub Secrets)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+
+      # A porta 22 fica fechada para o mundo. Só durante o deploy liberamos o IP
+      # deste runner (/32), e removemos a regra no final, mesmo se o deploy falhar.
+      - name: Localiza a EC2 e libera o SSH só para o IP do runner
+        id: alvo
+        run: |
+          IP_RUNNER=$(curl -s https://checkip.amazonaws.com)
+          SG_ID=$(aws ec2 describe-security-groups --filters Name=group-name,Values=tapa-buraco-mvp \
+            --query 'SecurityGroups[0].GroupId' --output text)
+          HOST=$(aws ec2 describe-instances \
+            --filters Name=tag:Name,Values=tapa-buraco-mvp Name=instance-state-name,Values=running \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+          echo "sg=$SG_ID" >> "$GITHUB_OUTPUT"
+          echo "ip=$IP_RUNNER" >> "$GITHUB_OUTPUT"
+          echo "host=$HOST" >> "$GITHUB_OUTPUT"
+          aws ec2 authorize-security-group-ingress --group-id "$SG_ID" \
+            --protocol tcp --port 22 --cidr "$IP_RUNNER/32"
+
+      - name: SSH na EC2 e docker compose up
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          GRAFANA_SENHA: ${{ secrets.GRAFANA_SENHA }}
+          REPO: ${{ github.repository }}
+        with:
+          host: ${{ steps.alvo.outputs.host }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          envs: GRAFANA_SENHA,REPO
+          script_stop: true
+          script: |
+            if [ ! -d "$HOME/app-repo/.git" ]; then
+              git clone "https://github.com/$REPO.git" "$HOME/app-repo"
+            fi
+            cd "$HOME/app-repo"
+            git fetch origin main
+            git reset --hard origin/main
+            printf 'GRAFANA_SENHA=%s\n' "$GRAFANA_SENHA" > .env
+            sudo docker compose up -d --build
+            sudo docker image prune -f
+
+      - name: Fecha de novo a porta 22 para o runner
+        if: always() && steps.alvo.outputs.sg != ''
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id "${{ steps.alvo.outputs.sg }}" \
+            --protocol tcp --port 22 --cidr "${{ steps.alvo.outputs.ip }}/32"

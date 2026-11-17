@@ -1,0 +1,2 @@
+# Copie para terraform.tfvars (que NÃO é versionado) e preencha:
+ip_admin = "SEU.IP.PUBLICO.AQUI/32" # descubra em https://checkip.amazonaws.com
