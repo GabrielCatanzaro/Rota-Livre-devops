@@ -110,7 +110,8 @@ def resposta_por_busca(pergunta: str) -> dict:
     """Plano B sem LLM: devolve o trecho da base com maior sobreposição de
     palavras significativas (ignora palavras curtas/comuns); recusa fora do tema."""
     def tokens(s):
-        return {p for p in _norm(s).split() if len(p) > 3}
+        # \w+ separa as palavras da pontuação ("calçada?" -> "calcada")
+        return {p for p in re.findall(r"\w+", _norm(s)) if len(p) > 3}
 
     q = tokens(pergunta)
     melhor, melhor_pontos = None, 0.0
