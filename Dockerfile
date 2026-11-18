@@ -10,9 +10,11 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY app/requirements.txt .
-# pip e setuptools atualizados (setuptools < 78.1.1 tem a CVE-2025-47273)
-RUN pip install --no-cache-dir --upgrade pip "setuptools>=78.1.1" \
-    && pip install --no-cache-dir -r requirements.txt
+# instala as dependências e REMOVE o pip e o setuptools da imagem final: o app não
+# precisa deles para rodar, e o pip traz bibliotecas embutidas (ex.: setuptools 70.3.0,
+# CVE-2025-47273) que o Trivy aponta. Menos ferramentas na imagem = menos superfície de ataque.
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip uninstall -y pip setuptools
 
 COPY app/ .
 
