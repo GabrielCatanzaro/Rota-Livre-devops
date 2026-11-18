@@ -4,6 +4,14 @@ Componente de **Produção** da CitizenTech *Tapa Buraco* — Global Solution 20
 Deploy Blindado: container, Terraform, pipeline DevSecOps (Gitleaks + Semgrep + Trivy) e
 observabilidade com as 4 métricas de ouro.
 
+## Integrantes
+
+| Nome | RM |
+|---|---|
+| Gabriel Gomes Catanzaro | RM93445 |
+| Lucas Gomes Alcantara | RM98766 |
+| Filipe Prado Menezes | RM98765 |
+
 ## Ficha Técnica do MVP
 
 | Campo | Descrição |
@@ -129,11 +137,3 @@ uvicorn main:app --port 8080
 ## Relatório da entrega
 
 PDF com arquitetura, evidências (prints) e custo: [docs/Entrega-DevOps-TapaBuraco.pdf](docs/Entrega-DevOps-TapaBuraco.pdf)
-
-## Integrantes
-
-| Nome | RM |
-|---|---|
-| Gabriel Gomes Catanzaro | RM93445 |
-| Lucas Gomes Alcantara | RM98766 |
-| Filipe Prado Menezes | RM98765 |
