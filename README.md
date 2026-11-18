@@ -15,7 +15,7 @@ observabilidade com as 4 métricas de ouro.
 | **Arquitetura: componentes** | MVP web (FastAPI + SQLite) em container na AWS · IA local (LLM 3B + RAG/agente, repositório `tapa-buraco-ia`) consumida via API · Prometheus + Grafana · pipeline GitHub Actions · infraestrutura Terraform |
 | **Fontes de dados** | Base de conhecimento com 36 trechos de fontes oficiais (CTB, CF/88, Lei 15.442/2011, SP156, LGPD) · Dados abertos SP156 (dados.prefeitura.sp.gov.br) |
 | **Modelos de IA utilizados** | Qwen2.5-3B-Instruct (GGUF Q4) local via llama.cpp/Vulkan, nas configurações RAG e agente; na nuvem, fallback por regras + busca na mesma base |
-| **URL do MVP** | [PREENCHER após o deploy] |
+| **URL do MVP** | http://34.193.105.165 (sessão de 18/11/2026 no AWS Academy Sandbox, que apaga os recursos ao fim de cada sessão; recriado em ~10 min com `terraform apply` + `scripts/pipeline-local.sh`) |
 | **Repositórios** | IA: https://github.com/GabrielCatanzaro/tapa-buraco-ia · DevOps: https://github.com/GabrielCatanzaro/tapa-buraco-devops |
 | **Indicadores de impacto** | nº de relatos registrados · % de relatos com triagem automática · tempo médio de resposta do assistente · % de perguntas respondidas com fonte citada |
 | **ODS conectados** | **11** Cidades e comunidades sustentáveis (vias seguras e zeladoria) · **9** Indústria, inovação e infraestrutura · **3** Saúde e bem-estar (menos acidentes) · **10** Redução das desigualdades (informação de direitos acessível) |
@@ -125,6 +125,10 @@ uvicorn main:app --port 8080
 - LGPD: o MVP **não coleta dados pessoais** do cidadão (sem cadastro, sem CPF);
   os relatos têm apenas endereço do problema e descrição; orientação na interface
   para não incluir dados pessoais. Dados ficam no volume `dados` da EC2 (SQLite).
+
+## Relatório da entrega
+
+PDF com arquitetura, evidências (prints) e custo: [docs/Entrega-DevOps-TapaBuraco.pdf](docs/Entrega-DevOps-TapaBuraco.pdf)
 
 ## Integrantes
 

@@ -2,9 +2,8 @@
 
 Secure DevOps Tools & Cloud Computing · Global Solution 2026.2 · FIAP · 4ES
 
-> Este arquivo vira o **PDF único com links clicáveis** da entrega.
-> Exportar: abrir no VS Code → Ctrl+Shift+V → imprimir em PDF (ou usar a extensão
-> "Markdown PDF"). Substituir todos os [PREENCHER] e inserir os prints.
+> Versão em texto do relatório. O **PDF da entrega, com todos os prints**, está em
+> [`Entrega-DevOps-TapaBuraco.pdf`](Entrega-DevOps-TapaBuraco.pdf).
 
 ## 1. Integrantes
 
@@ -16,7 +15,7 @@ Secure DevOps Tools & Cloud Computing · Global Solution 2026.2 · FIAP · 4ES
 
 ## 2. Links
 
-- **URL pública do MVP:** http://[PREENCHER]
+- **URL pública do MVP:** http://34.193.105.165 (sessão de 18/11/2026 no AWS Academy Sandbox)
 - **Repositório:** https://github.com/GabrielCatanzaro/tapa-buraco-devops
 - **Repositório da IA (componente Inteligência):** https://github.com/GabrielCatanzaro/tapa-buraco-ia
 
@@ -111,5 +110,10 @@ parada fora dos horários de avaliação (custo cai para ~US$ 5/mês, só EBS + 
 
 ## 10. Conclusão
 
-[PREENCHER — 1 parágrafo: pipeline de ponta a ponta funcionando, o que barrou,
-o que foi aprendido.]
+O MVP foi colocado no ar em infraestrutura criada inteiramente por Terraform, em container sem
+root e sem segredos, monitorado com as 4 métricas de ouro e um alerta real disparado. O pipeline
+mostrou valor na prática: além do segredo vazado de propósito (barrado pelo Gitleaks), o Trivy
+barrou duas vulnerabilidades HIGH reais da imagem base (zlib1g e setuptools embutido no pip),
+corrigidas nos commits 56be6be e 8018035. Com o GitHub Actions bloqueado por cobrança da plataforma,
+as mesmas etapas e critérios rodaram na EC2 com `scripts/pipeline-local.sh`, sem pular nenhuma
+verificação antes do deploy.
