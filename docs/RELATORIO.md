@@ -49,8 +49,15 @@ Deploy automático só na main, via SSH, com segredos em **GitHub Secrets**
 `GRAFANA_SENHA`). Para não abrir a porta 22, o job libera o SSH apenas para o IP do
 próprio runner (/32) durante o deploy e revoga a regra ao final.
 
-- [PRINT: execução **barrada** — commit com segredo falso reprovado pelo Gitleaks]
-- [PRINT: execução **corrigida** — pipeline verde com os 4 jobs e deploy]
+**Bloqueio do GitHub Actions.** Na conta do repositório, o Actions não inicia nenhum job:
+todos falham em 2 s com *"The job was not started because your account is locked due to a
+billing issue"*, um bloqueio de cobrança do GitHub (conta Free, repositório público, uso zero).
+Com autorização do professor, evidenciamos o erro e executamos as mesmas etapas do workflow
+na EC2 com `scripts/pipeline-local.sh`, com as mesmas ferramentas e os mesmos critérios.
+
+- [PRINT 05a: execução do Actions com as annotations de *billing issue*]
+- [PRINT 05: execução **barrada**: Gitleaks encontra um segredo falso e o deploy não roda]
+- [PRINT 06: execução **corrigida**: segredo removido, as 4 etapas passam e o deploy é feito]
 
 ## 6. Observabilidade
 

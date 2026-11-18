@@ -80,6 +80,23 @@ de falha. Nenhum segredo no código: tudo em GitHub Secrets e `.env` gerado na h
 (ex.: `aws_secret_access_key = "AKIA..."`) → o Gitleaks barra o pipeline; remova e
 faça novo push → verde. Prints dos dois no relatório.
 
+### 3.1. Pipeline sem o GitHub Actions (conta bloqueada pelo GitHub)
+
+Nesta entrega, o GitHub Actions da conta não executa: todos os jobs falham em 2 s com
+*"The job was not started because your account is locked due to a billing issue"*, um
+bloqueio de cobrança do GitHub alheio ao projeto (conta Free, repositório público, uso zero).
+O professor autorizou evidenciar o erro e demonstrar o pipeline por outro meio.
+
+O script [`scripts/pipeline-local.sh`](scripts/pipeline-local.sh) roda **na EC2** as mesmas
+etapas do workflow, com as mesmas ferramentas e os mesmos critérios de bloqueio
+(Gitleaks → Semgrep → build + Trivy → deploy). Se qualquer etapa falhar, o deploy não acontece:
+
+```bash
+git clone https://github.com/GabrielCatanzaro/tapa-buraco-devops.git && cd tapa-buraco-devops
+echo "GRAFANA_SENHA=<senha forte>" > ~/tapa-buraco.env   # fora da pasta do repo
+bash scripts/pipeline-local.sh
+```
+
 ### 4. Observabilidade
 
 - **Dashboard**: `http://IP:3000` (admin / `GRAFANA_SENHA`, só do IP do time) — dashboard
