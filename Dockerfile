@@ -4,8 +4,14 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# atualizações de segurança do Debian da imagem base (ex.: zlib1g, CVE-2026-85091)
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY app/requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip \
+# pip e setuptools atualizados (setuptools < 78.1.1 tem a CVE-2025-47273)
+RUN pip install --no-cache-dir --upgrade pip "setuptools>=78.1.1" \
     && pip install --no-cache-dir -r requirements.txt
 
 COPY app/ .
