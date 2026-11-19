@@ -1,4 +1,4 @@
-"""Tapa Buraco — MVP (Secure DevOps & Cloud).
+"""Rota Livre — MVP (Secure DevOps & Cloud).
 
 App do cidadão: registrar relatos de buracos/obstáculos, acompanhar a lista e
 tirar dúvidas no chat. A triagem e o chat usam a IA local do repositório `llm`
@@ -25,7 +25,7 @@ AQUI = Path(__file__).resolve().parent
 DB_PATH = os.environ.get("DB_PATH", str(AQUI / "dados" / "relatos.db"))
 IA_URL = os.environ.get("IA_URL", "").rstrip("/")  # ex.: http://192.168.0.10:8000
 
-app = FastAPI(title="Tapa Buraco", version="1.0")
+app = FastAPI(title="Rota Livre", version="1.0")
 Instrumentator().instrument(app).expose(app)  # /metrics para o Prometheus
 
 

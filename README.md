@@ -1,8 +1,11 @@
-# Tapa Buraco — MVP em Produção (Secure DevOps Tools & Cloud Computing)
+# Rota Livre — MVP em Produção (Secure DevOps Tools & Cloud Computing)
 
-Componente de **Produção** da CitizenTech *Tapa Buraco* — Global Solution 2026.2 · FIAP · 4ES.
+Componente de **Produção** da CitizenTech *Rota Livre* — Global Solution 2026.2 · FIAP · 4ES.
 Deploy Blindado: container, Terraform, pipeline DevSecOps (Gitleaks + Semgrep + Trivy) e
 observabilidade com as 4 métricas de ouro.
+
+> O produto se chamava *Tapa Buraco* quando as evidências foram capturadas; os identificadores técnicos
+> (repositório, Security Group, containers) mantêm esse nome para corresponder aos prints.
 
 ## Integrantes
 
@@ -16,7 +19,7 @@ observabilidade com as 4 métricas de ouro.
 
 | Campo | Descrição |
 |---|---|
-| **Nome do produto** | Tapa Buraco |
+| **Nome do produto** | Rota Livre |
 | **Cidadão e território** | Morador do município de São Paulo que convive com buracos na via, calçadas quebradas e obstáculos — motorista, motociclista, ciclista, pedestre, pessoa com deficiência |
 | **Problema, em uma frase** | O cidadão não sabe como reportar um buraco, de quem é a responsabilidade nem como ser ressarcido — e "Buraco e Pavimentação" está entre os temas mais reclamados da Ouvidoria municipal |
 | **Proposta de valor** | Em uma tela: reportar o problema com triagem automática (tipo, gravidade, órgão responsável) e tirar dúvidas com um assistente que responde com base em fontes oficiais, citando a fonte |
@@ -108,7 +111,7 @@ bash scripts/pipeline-local.sh
 ### 4. Observabilidade
 
 - **Dashboard**: `http://IP:3000` (admin / `GRAFANA_SENHA`, só do IP do time) — dashboard
-  provisionado "Tapa Buraco — 4 métricas de ouro": latência (p50/p95), tráfego (req/s),
+  provisionado "Rota Livre — 4 métricas de ouro": latência (p50/p95), tráfego (req/s),
   erros (% 5xx) e saturação (CPU/memória).
 - **Alerta**: regra `TaxaDeErroAlta` (>5% de 5xx) no Prometheus. Para disparar:
   acesse `http://IP/erro-demo` repetidas vezes e veja FIRING em `http://IP:9090/alerts`.
@@ -136,4 +139,4 @@ uvicorn main:app --port 8080
 
 ## Relatório da entrega
 
-PDF com arquitetura, evidências (prints) e custo: [docs/Entrega-DevOps-TapaBuraco.pdf](docs/Entrega-DevOps-TapaBuraco.pdf)
+PDF com arquitetura, evidências (prints) e custo: [docs/Entrega-DevOps-RotaLivre.pdf](docs/Entrega-DevOps-RotaLivre.pdf)

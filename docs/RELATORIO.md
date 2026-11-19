@@ -1,9 +1,9 @@
-# Relatório — Tapa Buraco · Deploy Blindado
+# Relatório — Rota Livre · Deploy Blindado
 
 Secure DevOps Tools & Cloud Computing · Global Solution 2026.2 · FIAP · 4ES
 
 > Versão em texto do relatório. O **PDF da entrega, com todos os prints**, está em
-> [`Entrega-DevOps-TapaBuraco.pdf`](Entrega-DevOps-TapaBuraco.pdf).
+> [`Entrega-DevOps-RotaLivre.pdf`](Entrega-DevOps-RotaLivre.pdf).
 
 ## 1. Integrantes
 

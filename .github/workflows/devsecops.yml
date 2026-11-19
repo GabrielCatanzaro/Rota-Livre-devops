@@ -1,4 +1,4 @@
-# Pipeline DevSecOps do Tapa Buraco:
+# Pipeline DevSecOps do Rota Livre:
 # a cada push -> Gitleaks (segredos) + Semgrep (SAST) + build e Trivy (imagem).
 # Qualquer achado barra o pipeline ANTES do deploy.
 # Deploy automático na EC2 só na main, com todos os segredos em GitHub Secrets.

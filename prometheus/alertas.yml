@@ -11,7 +11,7 @@ groups:
         labels:
           severidade: critica
         annotations:
-          resumo: "Taxa de erros 5xx acima de 5% no Tapa Buraco"
+          resumo: "Taxa de erros 5xx acima de 5% no Rota Livre"
 
       - alert: AppFora
         expr: up{job="tapa-buraco"} == 0
@@ -19,4 +19,4 @@ groups:
         labels:
           severidade: critica
         annotations:
-          resumo: "O MVP Tapa Buraco está fora do ar"
+          resumo: "O MVP Rota Livre está fora do ar"

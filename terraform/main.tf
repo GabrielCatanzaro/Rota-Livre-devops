@@ -1,4 +1,4 @@
-# Infraestrutura do MVP Tapa Buraco no AWS Academy (Learner Lab).
+# Infraestrutura do MVP Rota Livre no AWS Academy (Learner Lab).
 # state e terraform.tfvars ficam FORA do repositório (ver .gitignore).
 
 terraform {
