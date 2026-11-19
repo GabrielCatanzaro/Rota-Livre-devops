@@ -16,7 +16,7 @@ Secure DevOps Tools & Cloud Computing · Global Solution 2026.2 · FIAP · 4ES
 ## 2. Links
 
 - **URL pública do MVP:** http://34.193.105.165 (sessão de 18/11/2026 no AWS Academy Sandbox)
-- **Repositório:** https://github.com/GabrielCatanzaro/tapa-buraco-devops
+- **Repositório:** https://github.com/GabrielCatanzaro/Rota-Livre-devops
 - **Repositório da IA (componente Inteligência):** https://github.com/GabrielCatanzaro/tapa-buraco-ia
 
 ## 3. Diagrama da arquitetura

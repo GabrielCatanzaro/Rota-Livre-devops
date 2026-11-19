@@ -27,7 +27,7 @@ observabilidade com as 4 métricas de ouro.
 | **Fontes de dados** | Base de conhecimento com 36 trechos de fontes oficiais (CTB, CF/88, Lei 15.442/2011, SP156, LGPD) · Dados abertos SP156 (dados.prefeitura.sp.gov.br) |
 | **Modelos de IA utilizados** | Qwen2.5-3B-Instruct (GGUF Q4) local via llama.cpp/Vulkan, nas configurações RAG e agente; na nuvem, fallback por regras + busca na mesma base |
 | **URL do MVP** | http://34.193.105.165 (sessão de 18/11/2026 no AWS Academy Sandbox, que apaga os recursos ao fim de cada sessão; recriado em ~10 min com `terraform apply` + `scripts/pipeline-local.sh`) |
-| **Repositórios** | IA: https://github.com/GabrielCatanzaro/tapa-buraco-ia · DevOps: https://github.com/GabrielCatanzaro/tapa-buraco-devops |
+| **Repositórios** | IA: https://github.com/GabrielCatanzaro/tapa-buraco-ia · DevOps: https://github.com/GabrielCatanzaro/Rota-Livre-devops |
 | **Indicadores de impacto** | nº de relatos registrados · % de relatos com triagem automática · tempo médio de resposta do assistente · % de perguntas respondidas com fonte citada |
 | **ODS conectados** | **11** Cidades e comunidades sustentáveis (vias seguras e zeladoria) · **9** Indústria, inovação e infraestrutura · **3** Saúde e bem-estar (menos acidentes) · **10** Redução das desigualdades (informação de direitos acessível) |
 
@@ -103,7 +103,7 @@ etapas do workflow, com as mesmas ferramentas e os mesmos critérios de bloqueio
 (Gitleaks → Semgrep → build + Trivy → deploy). Se qualquer etapa falhar, o deploy não acontece:
 
 ```bash
-git clone https://github.com/GabrielCatanzaro/tapa-buraco-devops.git && cd tapa-buraco-devops
+git clone https://github.com/GabrielCatanzaro/Rota-Livre-devops.git && cd Rota-Livre-devops
 echo "GRAFANA_SENHA=<senha forte>" > ~/tapa-buraco.env   # fora da pasta do repo
 bash scripts/pipeline-local.sh
 ```
