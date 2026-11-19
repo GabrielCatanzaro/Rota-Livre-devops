@@ -11,7 +11,7 @@ Secure DevOps Tools & Cloud Computing · Global Solution 2026.2 · FIAP · 4ES
 |---|---|
 | Gabriel Gomes Catanzaro | RM93445 |
 | Lucas Gomes Alcantara | RM98766 |
-| Filipe Prado Menezes | RM98765 |
+| Henrique Canali Cuzato | RM551326 |
 
 ## 2. Links
 

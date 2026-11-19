@@ -13,7 +13,7 @@ observabilidade com as 4 métricas de ouro.
 |---|---|
 | Gabriel Gomes Catanzaro | RM93445 |
 | Lucas Gomes Alcantara | RM98766 |
-| Filipe Prado Menezes | RM98765 |
+| Henrique Canali Cuzato | RM551326 |
 
 ## Ficha Técnica do MVP
 
